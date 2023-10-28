@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.request
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 @WebMvcTest(LoanController::class)
@@ -50,12 +49,17 @@ class LoanControllerTest {
             userRegisterNumber = "000100-1001010"
         )
 
+        val loanRequestResponse = LoanRequestResponse(userKey = "Test")
+
         mockMvc.post("$baseUrl/request") {
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(loanInputRequest)
         }.andExpect {
             status { isOk() }
+            content {
+                mapper.writeValueAsString(loanRequestResponse)
+            }
         }
     }
 }
