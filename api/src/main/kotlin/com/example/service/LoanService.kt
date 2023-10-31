@@ -1,11 +1,15 @@
 package com.example.service
 
 import com.example.LoanReviewPort
+import com.example.SendMessagePort
 import com.example.UserInfoPort
 import com.example.adapter.`in`.web.LoanInputRequest
 import com.example.adapter.`in`.web.LoanRequestResponse
 import com.example.adapter.`in`.web.LoanResult
 import com.example.adapter.`in`.web.LoanReviewResponse
+import com.example.dto.LoanRequestMessagingDto
+import com.example.dto.UserInfoDto
+import com.example.enumulation.KafkaTopic
 import com.example.exception.CustomErrorCode
 import com.example.exception.CustomException
 import com.example.port.LoanRequestUseCase
@@ -19,6 +23,7 @@ class LoanService(
     private val keyGenerator: KeyGenerator,
     private val userInfoPort: UserInfoPort,
     private val loanReviewPort: LoanReviewPort,
+    private val sendMessagePort: SendMessagePort,
     private val encryptEncoder: EncryptEncoder,
 ) : LoanRequestUseCase, LoanReviewUseCase {
 
@@ -26,13 +31,11 @@ class LoanService(
         val userKey = keyGenerator.generateUserKey()
         loanInputRequest.userRegisterNumber =
             encryptEncoder.encryptString(loanInputRequest.userRegisterNumber)
-        userInfoPort.saveUserInfo(loanInputRequest.toUserInfoDto(userKey))
+        val userInfo = userInfoPort.saveUserInfo(loanInputRequest.toUserInfoDto(userKey))
+
+        sendMessagePort.sendMessage(KafkaTopic.LOAN_REQUEST, userInfo.toLoanRequestKafkaDto())
 
         return LoanRequestResponse(userKey)
-    }
-
-    override fun loanRequestReview() {
-        TODO("Not yet implemented")
     }
 
     override fun loanReview(userKey: String): LoanReviewResponse {
@@ -47,4 +50,11 @@ class LoanService(
             )
         )
     }
+
+    private fun UserInfoDto.toLoanRequestKafkaDto() = LoanRequestMessagingDto(
+        userKey = userKey,
+        userName = userName,
+        userIncomeAmount = userIncomeAmount,
+        userRegisterNumber = userRegisterNumber
+    )
 }

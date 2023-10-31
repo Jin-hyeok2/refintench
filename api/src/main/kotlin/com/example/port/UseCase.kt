@@ -5,8 +5,7 @@ import com.example.adapter.`in`.web.LoanRequestResponse
 import com.example.adapter.`in`.web.LoanReviewResponse
 
 interface LoanRequestUseCase {
-    fun loanRequest(loanInputRequest: LoanInputRequest) : LoanRequestResponse
-    fun loanRequestReview()
+    fun loanRequest(loanInputRequest: LoanInputRequest): LoanRequestResponse
 }
 
 interface LoanReviewUseCase {

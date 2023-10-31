@@ -24,7 +24,8 @@ class LogAspect {
         val result = joinPoint.proceed()
 
         stopWatch.stop()
-        log.info( "${joinPoint.signature?.name} ${joinPoint.args[0]} ${stopWatch.lastTaskTimeMillis}")
+        val any = if (joinPoint.args.isEmpty()) "undefined" else joinPoint.args[0]
+        log.info( "${joinPoint.signature?.name} $any ${stopWatch.lastTaskTimeMillis}")
         return result?: null
     }
 }

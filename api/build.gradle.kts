@@ -5,6 +5,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
     implementation(project(":domain"))
+    implementation(project(":kafka"))
 
     runtimeOnly("com.mysql:mysql-connector-j")
     testCompileOnly("com.h2database:h2")
