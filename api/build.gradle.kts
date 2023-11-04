@@ -7,8 +7,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":kafka"))
 
-    runtimeOnly("com.mysql:mysql-connector-j")
-    testCompileOnly("com.h2database:h2")
-
     implementation("org.springframework.boot:spring-boot-starter-aop:3.1.5")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
